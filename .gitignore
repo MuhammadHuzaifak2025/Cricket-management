@@ -1,4 +1,8 @@
 VirtualEnviroment
-./GullySports/GullySports/__pycache__
-GullySports/GullySports/__pycache__
-GullySportsApp/GullySports/sports/migrations/cd
+./GullySports/GullySports/__pycache__/
+GullySports/GullySports/__pycache__/
+GullySportsApp/GullySports/sports/migrations/
+GullySportsApp/GullySports/db.sqlite3
+GullySports/sports/migrations/__pycache__
+GullySports/sports/__pycache__
+GullySports/sports/migrations/*.py
