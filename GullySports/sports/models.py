@@ -1,21 +1,5 @@
 from django.db import models
 
-
-# class Player(models.Model):
-#     Genders = {
-#         "M" : "Male",
-#         "F" : "Female",
-#         "O" : "Others",
-
-#     }
-#     Playerid = models.AutoField(primary_key=True, auto_created=True)
-#     Name = models.CharField(max_length=300)
-#     Dateofbirth = models.DateField()
-#     Age = models.IntegerField()
-#     Gender = models.TextChoices(choices=Genders,max_length=1)
-    
-# from django.db import models
-
 class Player(models.Model):
     player_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -57,10 +41,8 @@ class Match(models.Model):
     
 class BallEvent(models.Model):
     ball_event_id = models.AutoField(primary_key=True)
-    # innings = models.ForeignKey(Innings, on_delete=models.CASCADE)
     bowler = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='bowler')
     batsman = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='batsman')
-    # You can expand this model to include details about the ball type (run, wicket, etc.), score, etc.
     type = models.CharField(max_length=50)
     score = models.IntegerField()
 
@@ -76,4 +58,3 @@ class Innings(models.Model):
 
     def __str__(self):
         return f"Innings {self.id} - {self.match}"
-
