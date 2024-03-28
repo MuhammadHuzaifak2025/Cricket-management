@@ -1,9 +1,7 @@
-
 from django.contrib import admin
 from django.urls import path, include
-
+from sports import views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('', include('sports.urls'))
+    path('', views.Create_user, name="CreateUser")
 ]
