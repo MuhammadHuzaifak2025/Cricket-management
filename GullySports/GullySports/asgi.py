@@ -23,5 +23,6 @@ ws_pattern = [
     path('ws/test/', EchoConsumer.as_asgi()),
 ]
 application = ProtocolTypeRouter({
-    'websocket' : URLRouter(ws_pattern)
+    'websocket' : URLRouter(ws_pattern),
+    'http' : django_asgi_app 
 })
