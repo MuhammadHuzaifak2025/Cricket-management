@@ -1,7 +1,7 @@
 start:
 	cd ../VirtualEnviroment/bin
 	activate
-	python manage.py runserver
+	python manage.py runserver 
 
 runserver:
 	python manage.py runserver
