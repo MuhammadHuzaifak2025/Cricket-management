@@ -1,6 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Player(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null = True)   
     player_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     age = models.IntegerField()
@@ -28,8 +30,6 @@ class Team(models.Model):
     def __str__(self):
         return self.team_name
 
-
-
 class Match(models.Model):
     match_id = models.AutoField(primary_key=True)
     team_a = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_a')
@@ -40,14 +40,14 @@ class Match(models.Model):
         return f"{self.team_a.team_name} vs {self.team_b.team_name}"
     
 class BallEvent(models.Model):
-    ball_event_id = models.AutoField(primary_key=True)
+    ball_event_id = models.AutoField(primary_key=True, auto_created=True)
     bowler = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='bowler')
     batsman = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='batsman')
     type = models.CharField(max_length=50)
     score = models.IntegerField()
 
     def __str__(self):
-        return f"Ball {self.id} - {self.innings}"
+        return f"Ball {self.ball_event_id}"
 
 class Innings(models.Model):
     innings_id = models.AutoField(primary_key=True)
