@@ -58,8 +58,8 @@ def getPlayerdata(request, playername=None):
                     wickets += 1
 
             if ballEvents.exists():
-                print(player_recs[0])
-                return JsonResponse({"Player": player_recs[0], "Total Score": total_score, "Wickets": wickets, "Ave"})
+                # print(BallEvent[0].get('score').count())
+                return JsonResponse({"Player": player_recs[0], "Total Score": total_score, "Wickets": wickets, "Avg": total_score/ballEvents.count()})
             else:
                 return JsonResponse({"Player": "No Data Found"})
         else:
