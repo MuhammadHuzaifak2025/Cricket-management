@@ -66,4 +66,53 @@ def getPlayerdata(request, playername=None):
             return JsonResponse({"Player": "Player name not provided"})
     else:
         return JsonResponse({"Player": "Not Logged In"})
-    
+
+
+#   Not Working  
+# def getmyTeamData(request, teamname=None):
+#     if User.is_authenticated:
+#         user = User.objects.filter(username=User.username)
+#         print(user)
+#         team = Team.objects.filter(players=user[0])
+#         print(team)
+#         if team.exists():
+#             team_recs = Team.objects.filter(name=team.values('name')[0].get('name')).values('name', 'coach', 'captain')
+#             players = Player.objects.filter(team=team[0]).values('name', 'age', 'salary')
+
+#             if players.exists():
+#                 return JsonResponse({"Team": team_recs[0], "Players": list(players)})
+#             else:
+#                 return JsonResponse({"Team": "No Players Found"})
+#         else:
+#             return JsonResponse({"Team": "Team name not provided"})
+#     else:
+#         return JsonResponse({"Team": "Not Logged In"})
+
+def NewCoach(request, CoachName,Password ,Age, Salary):
+
+    user = User.objects.filter(username = CoachName).values('username')
+    if(user.count() == 0):    
+        User.objects.create(username = CoachName, password = Password)
+        
+        Coaches = Coach.objects.create(name = CoachName,age = Age, salary = Salary)
+        if(Coaches):
+            return JsonResponse({"Status":"Created Coach"}, status = 200)
+        else: return JsonResponse({"Status":"Error Creating Coach"}, status = 400)
+    else:
+         return JsonResponse({"Status":"Coach Already Registered"}, status = 400)
+
+def NewTeam(request,TeamName):
+    if(Team.objects.filter(team_name = TeamName).count() == 0):
+        Teams = Team.objects.create(team_name = TeamName)
+        return JsonResponse({"Status":"Created Team"}, status = 200)
+    return JsonResponse({"Status":"Team with samename cant be created"}, status = 400)
+
+def AddPlayerToTeam(request, TeamName, PlayerName):
+    if(Team.objects.filter(team_name = TeamName).count() == 0):
+        Teams = Team.objects.filter(team_name = TeamName)
+        if(Player.objects.filter(name = PlayerName).count() == 0):
+            return JsonResponse({"Status":"Player Not Found"}, status = 400)
+        Players = Player.objects.filter(name = PlayerName)
+        Teams.players.add(Players[0])
+        return JsonResponse({"Status":"Player Added to Team"}, status = 200)
+    return JsonResponse({"Status":"Team Not Found"}, status = 400)
