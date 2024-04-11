@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null = True)   
@@ -36,6 +37,7 @@ class Match(models.Model):
     team_a = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_a')
     team_b = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_b')
     venue = models.CharField(max_length=100)
+    date = models.DateField(default=date.today)
 
     def __str__(self):
         return f"{self.team_a.team_name} vs {self.team_b.team_name}"

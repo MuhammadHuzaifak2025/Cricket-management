@@ -3,6 +3,9 @@ from .models import Innings, Player, Team, Match, BallEvent, Coach
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.http import JsonResponse
+from faker import Faker
+import datetime
+
 
 def Create_user(request, username=None, email=None, password=None):
     username = "Huzaifa_Ali3"
@@ -116,3 +119,43 @@ def AddPlayerToTeam(request, TeamName, PlayerName):
         Teams.players.add(Players[0])
         return JsonResponse({"Status":"Player Added to Team"}, status = 200)
     return JsonResponse({"Status":"Team Not Found"}, status = 400)
+
+def temp_generate_teams(request):
+    fake = Faker()
+    
+    TeamName = fake.name()
+    team = Team.objects.create(team_name=TeamName)
+    for i in range(0,11):
+        name = fake.name()
+        passw = fake.password()
+        NewPlayer(request=request, PlayerName=name, Age=fake.random_int(min=18, max=40),Password = passw,Genders = fake.random_int(min=0, max=1),Salary=fake.random_int(min=10000, max=100000) )    
+        team.players.add(Player.objects.filter(name=name)[0])
+    return JsonResponse({"Status": f'Teams Created with name {TeamName}. '})
+
+
+def create_match(request, Team2Name, Team1Name, Venue=None, date=None, time=None):
+    if(Team2Name == Team1Name):
+        return JsonResponse({"Status": "Both Teams can't be same"},status = 400)
+    team1 =Team.objects.filter(team_name=Team1Name) 
+    team2 =Team.objects.filter(team_name=Team2Name) 
+    if team1.count()== 0:
+        return JsonResponse({"Status": f"{Team1Name} not found"},status = 400)
+    if team2.count() == 0:
+        return JsonResponse({"Status": f"{Team2Name} not found"},status = 400)
+    Team_a = Match.objects.filter(team_a = team1[0],date =datetime.datetime.now())
+    Team_b = Match.objects.filter(team_b = team2[0],date =datetime.datetime.now())
+    if(Team_a.count() > 0 and Team_b.count() > 0):
+        return JsonResponse({"Status": f"Both Teams {Team1Name} and {Team2Name} are already playing a match"},status = 400)
+    if Team_a.count() > 0:
+        return JsonResponse({"Status": f"{Team1Name} is already playing a match"},status = 400)
+    if Team_b.count() > 0: 
+        return JsonResponse({"Status": f"{Team2Name} is already playing a match"},status = 400) 
+
+    if User.is_authenticated:
+        if User.is_staff :
+            match = Match.objects.create(team_a=team1[0], team_b=team2[0], venue= Venue)
+            return JsonResponse({"Status": "Match Created"})
+        else:
+            return JsonResponse({"Status": "Not Authorized to create match"})
+    else:
+        return JsonResponse({"Status": "Not Logged In"})
