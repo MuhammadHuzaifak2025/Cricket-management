@@ -16,4 +16,5 @@ urlpatterns = [
     path('api/temp/temp_generate_teams/', views.temp_generate_teams, name="temp_generate_teams"),
     path('api/create_match/', views.create_match, name="create_match"),
     path('api/view_all_matches/', views.view_all_matches, name="view_all_matches"),
+    path('api/perform_toss/', views.performtoss, name="performtoss"),
 ]

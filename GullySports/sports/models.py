@@ -38,6 +38,9 @@ class Match(models.Model):
     team_b = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_b')
     venue = models.CharField(max_length=100)
     date = models.DateField(default=date.today)
+    Innings_01 = models.OneToOneField('Innings', related_name='Innings_01', on_delete=models.CASCADE, null = True)
+    Innings_02 = models.OneToOneField('Innings', related_name='Innings_02', on_delete=models.CASCADE, null = True)
+    Result = models.CharField(max_length=100, default='Match yet to be played')
 
     def __str__(self):
         return f"{self.team_a.team_name} vs {self.team_b.team_name}"
@@ -46,18 +49,23 @@ class BallEvent(models.Model):
     ball_event_id = models.AutoField(primary_key=True, auto_created=True)
     bowler = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='bowler')
     batsman = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='batsman')
-    type = models.CharField(max_length=50)
+    wicket = models.BooleanField(default=False)
     score = models.IntegerField()
-
+    
     def __str__(self):
         return f"Ball {self.ball_event_id}"
 
 class Innings(models.Model):
     innings_id = models.AutoField(primary_key=True)
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    # match = models.ForeignKey(Match, on_delete=models.CASCADE)
     batting_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='batting_team')
     bowling_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='bowling_team')
     ball_events = models.ManyToManyField(BallEvent)
+    over = models.IntegerField(null = True)
+    extras = models.IntegerField(null = True)
+    total = models.IntegerField(null = True)
+    wickets = models.IntegerField(null = True)
 
     def __str__(self):
         return f"Innings {self.id} - {self.match}"
+    

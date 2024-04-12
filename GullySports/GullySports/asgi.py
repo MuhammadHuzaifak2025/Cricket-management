@@ -15,12 +15,13 @@ from django.urls import path
 from channels.routing import ProtocolTypeRouter,URLRouter
 from django.core.asgi import get_asgi_application
 
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'GullySports.settings')
 
 django_asgi_app = get_asgi_application()
 
 ws_pattern = [
-    path('ws/live_score/<int:match_id>/', CricketMatchDetails.as_asgi()),
+    path('ws/live/<str:role>/<int:match_id>/', CricketMatchDetails.as_asgi()),
 ]
 application = ProtocolTypeRouter({
     'websocket' : URLRouter(ws_pattern),

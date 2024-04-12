@@ -223,3 +223,11 @@ def view_all_matches(request):
             'match_id': match.match_id
         })
     return JsonResponse({"Matches": matches_list})
+
+@api_view(http_method_names=['GET'])
+def performtoss(request):
+    fake = Faker()
+    fake_toss =fake.random_int(min=0, max=1)
+    if(fake_toss == 0):
+        return JsonResponse({"Toss": "Head"})
+    else : return JsonResponse({"Toss": "Tail"})
