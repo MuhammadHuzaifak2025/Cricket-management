@@ -60,12 +60,12 @@ class Innings(models.Model):
     # match = models.ForeignKey(Match, on_delete=models.CASCADE)
     batting_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='batting_team')
     bowling_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='bowling_team')
-    ball_events = models.ManyToManyField(BallEvent)
+    ball_events = models.ManyToManyField(BallEvent, null=True)
     over = models.IntegerField(null = True)
     extras = models.IntegerField(null = True)
     total = models.IntegerField(null = True)
     wickets = models.IntegerField(null = True)
 
     def __str__(self):
-        return f"Innings {self.id} - {self.match}"
+        return f"Innings {self.innings_id}"
     

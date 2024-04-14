@@ -11,6 +11,8 @@ migrations:
 	python manage.py migrate
 	python manage.py runserver
 
-RedisDocker:
-	docker pull redis
+RunRedis:
 	docker run --rm --name local-redis -p 6379:6379 -d redis
+
+PullRedis:
+	docker pull redis
