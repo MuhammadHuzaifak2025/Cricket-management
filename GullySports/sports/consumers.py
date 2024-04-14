@@ -78,14 +78,6 @@ class CricketMatchDetails(AsyncWebsocketConsumer):
                         'text': data
                     }
                     )
-            elif message_type == 'Start_Innings_02':
-                pass
-                # match_id = text_data_json.get('Match_id')
-                # JD = json.dumps({"match_id":f"{match_id}"})
-                # print()
-                # await self.send(JD)
-                # Innings.objects.create(match_id=text_data_json.get('match_id'), bowling_team=text_data_json.get('bowling_team'), batting_team=text_data_json.get('batting_team'))
-                # await self.update_match(text_data_json)
         except:
             pass
     
