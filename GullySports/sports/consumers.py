@@ -11,12 +11,12 @@ from asgiref.sync import async_to_sync
 class CricketMatchDetails(AsyncWebsocketConsumer):
 
     async def connect(self):
-
         try:
             self.match_id = self.scope['url_route']['kwargs']['match_id']
         except KeyError:
             print("KeyError")
             if(self.match_id == None):
+                print("Match ID not found")
                 await self.close()  
                 await self.disconnect(1000)  
         self.room_name = f"watch_match{self.match_id}"
@@ -25,6 +25,7 @@ class CricketMatchDetails(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
             )
+        
         await self.accept()
         match_details = await self.get_match_details()
         if match_details:
@@ -32,7 +33,10 @@ class CricketMatchDetails(AsyncWebsocketConsumer):
             'message': match_details
         })
         else:
-            await self.close()
+           await self.send_match_details({
+            'message': "Match not started yet"
+        })
+           await self.disconnect(self,1000)
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -90,16 +94,15 @@ class CricketMatchDetails(AsyncWebsocketConsumer):
         try:
             match_id = self.match_id
             Innings_01 = Match.objects.filter(match_id=match_id).values('Innings_01').first()
+            print(Innings_01)
             if (data.get('batting_team') is None or data.get('bowling_team') is None) or( data.get('batting_team') == data.get('bowling_team')):
                 return {
                     "Error": "Invalid team selection"
                 }
-            
-            if Innings_01.get("Innings_01") is None:
-                BatT = Team.objects.filter(team_id=data.get('batting_team')).first()
-                BallT = Team.objects.filter(team_id=data.get('bowling_team')).first()
-                if BallT and BatT:
-                    innings_details = {
+            BatT = Team.objects.filter(team_id=data.get('batting_team')).first()
+            BallT = Team.objects.filter(team_id=data.get('bowling_team')).first()
+            innings_details = {
+                        'status': '',
                         'batting_team': BatT.team_name,
                         'bowling_team': BallT.team_name,
                         'extras': 0,
@@ -107,8 +110,12 @@ class CricketMatchDetails(AsyncWebsocketConsumer):
                         'wickets': 0,
                         "Error" : "Null"
                     }
-                    Innings.objects.create(bowling_team=T, batting_team=T)
-                    Match.objects.filter(match_id=match_id).update(Innings_01=Innings.objects.latest('innings_id'))
+            if Innings_01 is None or Innings_01.get("Innings_01") is None:
+
+                if BallT and BatT:
+                    Innings_1 = Innings.objects.create(bowling_team=BallT, batting_team=BatT)
+                    Match.objects.filter(match_id=match_id).update(Innings_01=Innings_1)
+                    innings_details['status'] = "Innings_01 Started"
                     return innings_details
                 else:
                     innings_details = {
@@ -116,11 +123,14 @@ class CricketMatchDetails(AsyncWebsocketConsumer):
                     }
                     return innings_details 
             else:
+                if Match.objects.filter(match_id=match_id).values('Innings_02').first().get('Innings_02') is not None:
+                    innings_details['Error'] = "Innings already started"
+                    return innings_details
                 innings_details = Innings.objects.filter(innings_id=Innings_01["Innings_01"]).values('batting_team', 'bowling_team', 'extras', 'total', 'wickets').first()
-                Innings.objects.create(bowling_team=T, batting_team=T)
-                Match.objects.filter(match_id=match_id).update(Innings_01=Innings.objects.latest('innings_id'))
-                innings_details['Errors': "Null"]
-
+                Innings2 = Innings.objects.create(bowling_team=BallT, batting_team=BatT)
+                Match.objects.filter(match_id=match_id).update(Innings_02=Innings2)
+                innings_details['Errors'] = "Null"
+                innings_details['status'] = "Innings_02 Started"
                 if innings_details:
                     return innings_details
                     # self.send_Innings_01(innings_details)
