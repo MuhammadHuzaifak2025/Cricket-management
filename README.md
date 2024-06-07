@@ -28,21 +28,25 @@ This is a Django-based Cricket Management System that provides various APIs for 
 ## DataBase Erd Diagram:
 ![image](https://github.com/MuhammadHuzaifak2025/Cricket-management/assets/115894335/09bb712d-9ee7-47b8-979d-3691bd351e98)
 
-Models
-The system uses several models:
+- Models
+  - The system uses several models:
+  - User: Default Django User model for authentication.
+  - Player: Represents a cricket player.
+  - Team: Represents a cricket team.
+  - Coach: Represents a coach of a team.
+  - Match: Represents a match between two teams.
+  - Innings: Represents an innings in a match.
+  - BallEvent: Represents an event (like a run or wicket) in a match.
 
-User: Default Django User model for authentication.
-Player: Represents a cricket player.
-Team: Represents a cricket team.
-Coach: Represents a coach of a team.
-Match: Represents a match between two teams.
-Innings: Represents an innings in a match.
-BallEvent: Represents an event (like a run or wicket) in a match.
+- Extentions:
+  - Postman
+  - Github Copilot
+  - Github codespaces
+  - Websocketking.com
 
-Extentions:
-Postman
-Github Copilot
-Websocketking
+- Databasses:
+  - Redis (WebSocketing)
+  - SQL LITE (Easy to use on codespaces)  
 
 Contributor:
 Muhammad Huzaifa (Owner).
